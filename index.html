@@ -14,18 +14,18 @@
 :root {
   --paper: #F5F6F1; --card: #FFFFFF; --ink: #15140F; --ink-2: #5D5B53; --line: #E2E1DA; --sunken: #ECEBE4;
   --red: #C7333B; --red-ink: #FFFFFF; --red-soft: #FBE9E8; --citron: #D4FF3F; --citron-ink: #15140F;
-  --screen: #F7F6F2; --frame: #15140F;
+  --screen: #F7F6F2; --frame: #15140F; --bug-bg: #15140F; --bug-fg: #F5F6F1; --bug-line: #15140F;
   --display: "Poppins", ui-sans-serif, system-ui, sans-serif;
   --body: "Figtree", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
 }
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
   --paper: #121210; --card: #1C1C19; --ink: #F1F0EA; --ink-2: #ABA99F; --line: #2E2E29; --sunken: #262622;
   --red: #E0484F; --red-ink: #FFFFFF; --red-soft: #3A1C1D; --citron: #D4FF3F; --citron-ink: #15140F;
-  --screen: #22221E; --frame: #000000; color-scheme: dark } }
+  --screen: #22221E; --frame: #000000; --bug-bg: #23231E; --bug-fg: #F1F0EA; --bug-line: #3A3A33; color-scheme: dark } }
 :root[data-theme="dark"] {
   --paper: #121210; --card: #1C1C19; --ink: #F1F0EA; --ink-2: #ABA99F; --line: #2E2E29; --sunken: #262622;
   --red: #E0484F; --red-ink: #FFFFFF; --red-soft: #3A1C1D; --citron: #D4FF3F; --citron-ink: #15140F;
-  --screen: #22221E; --frame: #000000; color-scheme: dark }
+  --screen: #22221E; --frame: #000000; --bug-bg: #23231E; --bug-fg: #F1F0EA; --bug-line: #3A3A33; color-scheme: dark }
 
 * { box-sizing: border-box; }
 body { background: var(--paper); color: var(--ink); font-family: var(--body); font-size: 17px; line-height: 1.55; padding: 0 16px; }
@@ -148,10 +148,10 @@ summary:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; bord
 .ans { padding: 0 16px 16px; color: var(--ink-2); display: grid; gap: 6px; }
 .faq { display: grid; gap: 8px; }
 
-.bug { background: var(--ink); color: var(--paper); border-radius: 22px; padding: 22px; display: grid; gap: 10px; }
-.bug h2 { color: var(--paper); }
+.bug { background: var(--bug-bg); color: var(--bug-fg); border: 1px solid var(--bug-line); border-radius: 22px; padding: 22px; display: grid; gap: 10px; }
+.bug h2 { color: var(--bug-fg); }
 .bug ol { margin: 0; padding-left: 1.2em; display: grid; gap: 4px; }
-.bug .soft { color: color-mix(in srgb, var(--paper) 72%, transparent); }
+.bug .soft { color: color-mix(in srgb, var(--bug-fg) 72%, transparent); }
 footer { color: var(--ink-2); font-size: .88rem; text-align: center; }
 @media (prefers-reduced-motion: reduce) { .bar > i { transition: none; } }
 </style>
