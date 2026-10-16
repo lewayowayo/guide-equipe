@@ -1,0 +1,424 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#C7333B">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 32 32%22%3E%3Crect width=%2232%22 height=%2232%22 rx=%228%22 fill=%22%23C7333B%22/%3E%3Cpath d=%22M9 16.5l4.5 4.5L23 11%22 fill=%22none%22 stroke=%22white%22 stroke-width=%223.2%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22/%3E%3C/svg%3E">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>L'appli Wayowayo</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Figtree:wght@400;500;600;700&display=swap">
+<style>
+/* Mise en page : guide mobile d'abord, une colonne, des étapes à cocher, maquettes d'écran en CSS. Rouge Wayowayo = action, citron = fait. */
+:root {
+  --paper: #F5F6F1; --card: #FFFFFF; --ink: #15140F; --ink-2: #5D5B53; --line: #E2E1DA; --sunken: #ECEBE4;
+  --red: #C7333B; --red-ink: #FFFFFF; --red-soft: #FBE9E8; --citron: #D4FF3F; --citron-ink: #15140F;
+  --screen: #F7F6F2; --frame: #15140F;
+  --display: "Poppins", ui-sans-serif, system-ui, sans-serif;
+  --body: "Figtree", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --paper: #121210; --card: #1C1C19; --ink: #F1F0EA; --ink-2: #ABA99F; --line: #2E2E29; --sunken: #262622;
+  --red: #E0484F; --red-ink: #FFFFFF; --red-soft: #3A1C1D; --citron: #D4FF3F; --citron-ink: #15140F;
+  --screen: #22221E; --frame: #000000; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --paper: #121210; --card: #1C1C19; --ink: #F1F0EA; --ink-2: #ABA99F; --line: #2E2E29; --sunken: #262622;
+  --red: #E0484F; --red-ink: #FFFFFF; --red-soft: #3A1C1D; --citron: #D4FF3F; --citron-ink: #15140F;
+  --screen: #22221E; --frame: #000000; color-scheme: dark }
+
+* { box-sizing: border-box; }
+body { background: var(--paper); color: var(--ink); font-family: var(--body); font-size: 17px; line-height: 1.55; padding: 0 16px; }
+.wrap { max-width: 680px; margin: 0 auto; padding-block: 28px 96px; }
+h1, h2, h3 { font-family: var(--display); line-height: 1.15; margin: 0; text-wrap: balance; }
+h1 { font-size: clamp(2.1rem, 8vw, 3rem); font-weight: 800; letter-spacing: -0.025em; }
+h2 { font-size: 1.55rem; font-weight: 700; letter-spacing: -0.015em; }
+h3 { font-size: 1.08rem; font-weight: 600; }
+p { margin: 0; }
+.muted { color: var(--ink-2); }
+.eyebrow { font-family: var(--display); font-size: .74rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--red); }
+code, .kbd { font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: .88em; background: var(--sunken); padding: 1px 6px; border-radius: 6px; }
+
+/* En-tête */
+.hero { display: grid; gap: 18px; padding-block: 8px 28px; }
+.brandmark { display: inline-flex; align-items: center; gap: 10px; font-family: var(--display); font-weight: 700; font-size: 1.05rem; }
+.brandmark .dot { width: 34px; height: 34px; border-radius: 10px; background: var(--red); display: grid; place-items: center; color: var(--red-ink); }
+.hero .lead { font-size: 1.15rem; color: var(--ink-2); max-width: 34ch; }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip { font-size: .9rem; font-weight: 600; background: var(--card); border: 1px solid var(--line); border-radius: 99px; padding: 6px 12px; }
+.test { background: var(--card); border: 1px solid var(--line); border-left: 6px solid var(--citron); border-radius: 16px; padding: 16px 18px; display: grid; gap: 6px; }
+
+/* Barre de progression collante */
+.progress { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--paper); display: flex; align-items: center; gap: 12px; padding-block: 10px; border-bottom: 1px solid var(--line); margin-bottom: 26px; }
+.bar { flex: 1; height: 10px; background: var(--sunken); border-radius: 99px; overflow: hidden; }
+.bar > i { display: block; height: 100%; width: 0; background: var(--citron); transition: width .35s; }
+.count { font-variant-numeric: tabular-nums; font-weight: 600; font-size: .9rem; min-width: 9ch; text-align: right; }
+
+/* Sommaire */
+nav.toc { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; margin: 0 -16px 30px; padding-inline: 16px; scrollbar-width: none; }
+nav.toc::-webkit-scrollbar { display: none; }
+nav.toc a { flex: none; font-weight: 600; font-size: .92rem; color: var(--ink); text-decoration: none; background: var(--card); border: 1px solid var(--line); border-radius: 99px; padding: 8px 14px; }
+nav.toc a:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
+
+section { display: grid; gap: 16px; margin-bottom: 52px; scroll-margin-top: 70px; }
+.sec-head { display: grid; gap: 6px; }
+
+/* Bascule iPhone / Android */
+.seg { display: inline-grid; grid-template-columns: 1fr 1fr; background: var(--sunken); border-radius: 14px; padding: 4px; gap: 4px; justify-self: start; }
+.seg button { font: inherit; font-weight: 600; font-size: .95rem; border: 0; border-radius: 10px; padding: 8px 18px; background: transparent; color: var(--ink-2); cursor: pointer; min-height: 40px; }
+.seg button[aria-pressed="true"] { background: var(--card); color: var(--ink); box-shadow: 0 1px 3px rgba(0,0,0,.12); }
+.seg button:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
+[data-os="ios"] .android-only, [data-os="android"] .ios-only { display: none; }
+
+/* Étapes */
+ol.steps { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; counter-reset: step; }
+ol.steps > li { background: var(--card); border: 1px solid var(--line); border-radius: 18px; counter-increment: step; }
+ol.steps label { display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 14px; padding: 16px 16px 16px 14px; cursor: pointer; }
+.tick { position: relative; width: 40px; height: 40px; }
+.tick input { appearance: none; position: absolute; inset: 0; margin: 0; border-radius: 12px; border: 2px solid var(--line); background: var(--sunken); cursor: pointer; }
+.tick input:checked { background: var(--citron); border-color: var(--citron); }
+.tick span { position: absolute; inset: 0; display: grid; place-items: center; font-family: var(--display); font-weight: 700; font-size: 1.05rem; pointer-events: none; color: var(--ink-2); }
+.tick span::before { content: counter(step); }
+.tick input:checked + span::before { content: ""; width: 9px; height: 16px; border: solid var(--citron-ink); border-width: 0 3px 3px 0; transform: translateY(-2px) rotate(45deg); }
+.tick input:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
+.txt { display: grid; gap: 6px; min-width: 0; }
+.txt strong { font-family: var(--display); font-weight: 600; font-size: 1.05rem; line-height: 1.3; }
+ol.steps li:has(input:checked) .txt strong { color: var(--ink-2); }
+.txt ol, .txt ul { margin: 2px 0 0; padding-left: 1.2em; display: grid; gap: 4px; }
+.tip { font-size: .93rem; background: var(--red-soft); border-radius: 10px; padding: 8px 10px; }
+.done-note { display: none; background: var(--citron); color: var(--citron-ink); border-radius: 16px; padding: 14px 16px; font-weight: 600; }
+.done-note.show { display: block; }
+
+/* Maquettes d'écran */
+.phone { width: 100%; max-width: 280px; justify-self: center; background: var(--frame); border-radius: 34px; padding: 10px; box-shadow: 0 18px 40px rgba(0,0,0,.18); }
+.screen { background: var(--screen); color: var(--ink); border-radius: 26px; overflow: hidden; display: grid; grid-template-rows: auto 1fr auto; min-height: 380px; font-size: 13px; }
+.s-top { display: flex; align-items: center; justify-content: space-between; padding: 14px 14px 8px; }
+.s-org { display: flex; gap: 8px; align-items: center; font-family: var(--display); font-weight: 700; font-size: 13px; }
+.s-org i { width: 22px; height: 22px; border-radius: 6px; background: var(--red); display: block; }
+.s-me { font-weight: 600; background: var(--card); border: 1px solid var(--line); border-radius: 99px; padding: 3px 10px 3px 3px; display: inline-flex; align-items: center; gap: 6px; font-size: 12px; }
+.s-me b { width: 20px; height: 20px; border-radius: 99px; background: var(--ink); color: var(--paper); display: grid; place-items: center; font-size: 10px; }
+.s-body { padding: 6px 14px 12px; display: grid; gap: 8px; align-content: start; }
+.s-title { font-family: var(--display); font-weight: 700; font-size: 19px; }
+.s-card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 9px 10px; display: grid; gap: 2px; }
+.s-card.dark { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.s-btn { background: var(--red); color: var(--red-ink); border-radius: 10px; padding: 8px 10px; font-weight: 700; text-align: center; }
+.s-small { font-size: 11px; color: var(--ink-2); }
+.s-nav { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid var(--line); background: var(--card); padding: 8px 4px 10px; font-size: 10px; text-align: center; color: var(--ink-2); }
+.s-nav.five { grid-template-columns: repeat(5, 1fr); }
+.s-nav span { display: grid; justify-items: center; gap: 3px; }
+.s-nav span::before { content: ""; width: 18px; height: 14px; border-radius: 99px; background: var(--sunken); }
+.s-nav span.on { color: var(--ink); font-weight: 700; }
+.s-nav span.on::before { background: var(--red); width: 28px; }
+.pad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; padding: 4px 6px; }
+.pad b { background: var(--card); border: 1px solid var(--line); border-radius: 12px; text-align: center; padding: 9px 0; font-family: var(--display); font-size: 16px; }
+.dots { display: flex; justify-content: center; gap: 10px; padding: 6px 0 10px; }
+.dots i { width: 12px; height: 12px; border-radius: 99px; border: 2px solid var(--ink); display: block; }
+.dots i.f { background: var(--ink); }
+.who { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; }
+.who span { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 10px 4px; text-align: center; font-weight: 600; font-size: 12px; }
+.row { display: flex; align-items: center; gap: 8px; }
+.box { width: 16px; height: 16px; border-radius: 5px; border: 2px solid var(--ink-2); flex: none; }
+.box.ok { background: var(--citron); border-color: var(--citron); }
+
+/* Deux colonnes : texte + maquette */
+.duo { display: grid; gap: 18px; align-items: center; }
+@media (min-width: 640px) { .duo { grid-template-columns: minmax(0, 1fr) 260px; } }
+
+/* Fonctions */
+.feats { display: grid; gap: 10px; }
+.feat { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 16px; display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 14px; align-items: start; }
+.ico { width: 44px; height: 44px; border-radius: 13px; background: var(--ink); color: var(--paper); display: grid; place-items: center; }
+.ico svg { width: 22px; height: 22px; }
+.feat ul { margin: 6px 0 0; padding-left: 1.1em; display: grid; gap: 3px; color: var(--ink-2); }
+.feat ul b { color: var(--ink); font-weight: 600; }
+
+.where { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.where div { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 14px; display: grid; gap: 6px; }
+.where h3 { font-size: .98rem; }
+.where ul { margin: 0; padding-left: 1.1em; color: var(--ink-2); font-size: .95rem; display: grid; gap: 2px; }
+@media (max-width: 420px) { .where { grid-template-columns: 1fr; } }
+
+/* FAQ */
+details { background: var(--card); border: 1px solid var(--line); border-radius: 16px; }
+summary { cursor: pointer; padding: 15px 16px; font-weight: 600; list-style: none; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px; }
+summary::-webkit-details-marker { display: none; }
+summary::after { content: "+"; font-family: var(--display); font-size: 1.2rem; line-height: 1; color: var(--red); }
+details[open] summary::after { content: "−"; }
+summary:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; border-radius: 16px; }
+.ans { padding: 0 16px 16px; color: var(--ink-2); display: grid; gap: 6px; }
+.faq { display: grid; gap: 8px; }
+
+.bug { background: var(--ink); color: var(--paper); border-radius: 22px; padding: 22px; display: grid; gap: 10px; }
+.bug h2 { color: var(--paper); }
+.bug ol { margin: 0; padding-left: 1.2em; display: grid; gap: 4px; }
+.bug .soft { color: color-mix(in srgb, var(--paper) 72%, transparent); }
+footer { color: var(--ink-2); font-size: .88rem; text-align: center; }
+@media (prefers-reduced-motion: reduce) { .bar > i { transition: none; } }
+</style>
+</head>
+<body>
+<div class="wrap" id="app" data-os="ios">
+
+  <header class="hero">
+    <span class="brandmark"><span class="dot" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span>Wayowayo</span>
+    <h1>Ton resto dans ta poche</h1>
+    <p class="lead">Ton planning, le cahier de l'équipe, l'inventaire et les listes du jour, au même endroit. Cinq minutes pour être prêt.</p>
+    <div class="chips"><span class="chip">Planning</span><span class="chip">Cahier</span><span class="chip">Inventaire</span><span class="chip">Listes du jour</span><span class="chip">Pointage</span></div>
+    <div class="test">
+      <p class="eyebrow">On la rode ensemble</p>
+      <p>C'est la nouvelle appli de Wayowayo. Les premières semaines, on la rode ensemble : tout ce qui coince, tout ce qui manque, tout ce qui t'agace, dis-le. C'est comme ça qu'on la rend vraiment bien.</p>
+    </div>
+  </header>
+
+  <div class="progress" aria-live="polite">
+    <div class="bar" aria-hidden="true"><i id="fill"></i></div>
+    <span class="count" id="count">0 / 6 faits</span>
+  </div>
+
+  <nav class="toc" aria-label="Sommaire">
+    <a href="#demarrer">Démarrer</a>
+    <a href="#telephone">Sur ton téléphone</a>
+    <a href="#tablette">Au resto</a>
+    <a href="#faq">Questions</a>
+    <a href="#bug">Un souci ?</a>
+  </nav>
+
+  <section id="demarrer">
+    <div class="sec-head">
+      <p class="eyebrow">Une seule fois</p>
+      <h2>Démarrer en 6 étapes</h2>
+      <p class="muted">Coche au fur et à mesure. Choisis ton téléphone :</p>
+    </div>
+    <div class="seg" role="group" aria-label="Ton téléphone">
+      <button type="button" id="os-ios" aria-pressed="true">iPhone</button>
+      <button type="button" id="os-android" aria-pressed="false">Android</button>
+    </div>
+
+    <ol class="steps">
+      <li><label><span class="tick"><input type="checkbox" id="st1"><span></span></span><span class="txt">
+        <strong>Ouvre l'e-mail « Bienvenue chez Wayowayo »</strong>
+        <span>Sur ton téléphone, touche le bouton de connexion. Le lien marche pendant 7 jours.</span>
+        <span class="tip">Pas d'e-mail ? Regarde dans les indésirables (spam). Toujours rien : demande à ton responsable de vérifier ton adresse.</span>
+      </span></label></li>
+
+      <li><label><span class="tick"><input type="checkbox" id="st2"><span></span></span><span class="txt">
+        <strong>Installe l'appli sur ton écran d'accueil</strong>
+        <span class="ios-only">Dans <b>Safari</b> :</span>
+        <ol class="ios-only">
+          <li>touche le bouton <b>Partager</b> (le carré avec une flèche vers le haut) ;</li>
+          <li>choisis <b>« Sur l'écran d'accueil »</b>, puis <b>« Ajouter »</b>.</li>
+        </ol>
+        <span class="android-only">Dans <b>Chrome</b> :</span>
+        <ol class="android-only">
+          <li>touche <b>« Installer »</b> si l'appli te le propose ;</li>
+          <li>sinon, menu <b>⋮</b> en haut à droite, puis <b>« Installer l'appli »</b> ou <b>« Ajouter à l'écran d'accueil »</b>.</li>
+        </ol>
+        <span class="tip ios-only">Si le lien s'est ouvert dans Gmail ou Outlook, touche d'abord « Ouvrir dans Safari ». Sur iPhone, seul Safari installe l'appli à coup sûr.</span>
+      </span></label></li>
+
+      <li><label><span class="tick"><input type="checkbox" id="st3"><span></span></span><span class="txt">
+        <strong>Ouvre l'appli depuis sa nouvelle icône</strong>
+        <span>Elle s'ouvre en plein écran, comme une vraie appli.</span>
+        <span class="ios-only">Sur iPhone, l'appli installée te demande de te connecter une fois : tape ton e-mail, puis <b>le code à 6 chiffres</b> reçu par e-mail. Tape le code dans l'appli, ne clique pas sur le lien (il s'ouvrirait dans Safari).</span>
+        <span class="android-only">Si elle te demande de te connecter : tape ton e-mail, puis le code à 6 chiffres reçu par e-mail.</span>
+      </span></label></li>
+
+      <li><label><span class="tick"><input type="checkbox" id="st4"><span></span></span><span class="txt">
+        <strong>Mets ta photo</strong>
+        <span>Onglet <b>Moi</b>, carte « Ma photo ». Elle apparaît sur le planning de l'équipe : tout le monde sait qui est qui.</span>
+      </span></label></li>
+
+      <li><label><span class="tick"><input type="checkbox" id="st5"><span></span></span><span class="txt">
+        <strong>Choisis ton code PIN</strong>
+        <span>Onglet <b>Moi</b>, carte « Mon code PIN » : 4 chiffres, à taper deux fois. C'est ta clé pour la tablette du resto.</span>
+        <span class="tip">Garde-le pour toi. Tu pourras le changer quand tu veux, au même endroit, en tapant l'ancien.</span>
+      </span></label></li>
+
+      <li><label><span class="tick"><input type="checkbox" id="st6"><span></span></span><span class="txt">
+        <strong>Active les notifications</strong>
+        <span>Onglet <b>Moi</b>, carte « Notifications ». Tu es prévenu quand ton planning est publié ou change, la veille de tes services, et pour les messages importants du cahier.</span>
+        <span class="tip ios-only">Sur iPhone, ça ne marche que depuis l'appli installée (étape 2).</span>
+      </span></label></li>
+    </ol>
+    <p class="done-note" id="done">C'est tout bon. Tu es prêt pour ton prochain service.</p>
+    <p class="muted">En bonus, toujours dans <b>Moi</b> : « Mon planning dans mon calendrier » ajoute tes services à l'appli Calendrier de ton téléphone.</p>
+  </section>
+
+  <section id="telephone">
+    <div class="sec-head">
+      <p class="eyebrow">Chez toi, n'importe quand</p>
+      <h2>Sur ton téléphone</h2>
+      <p class="muted">Quatre onglets en bas de l'écran.</p>
+    </div>
+
+    <div class="duo">
+      <div class="feats">
+        <div class="feat"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M8 3v4M16 3v4M3.5 10h17"/></svg></span><div>
+          <h3>Planning</h3>
+          <ul>
+            <li><b>Mes services</b> de la semaine, et <b>L'équipe</b> pour voir qui travaille avec toi.</li>
+            <li><b>Plages à prendre</b> : un créneau libre te tente ? « Je prends ». Ton responsable confirme.</li>
+            <li><b>Proposer ta plage</b> : un empêchement ? Propose-la à l'équipe, avec un mot si tu veux. Un collègue la prend, le responsable valide.</li>
+            <li><b>Mes disponibilités</b> et <b>Demander une absence</b> (congés, maladie…).</li>
+          </ul>
+        </div></div>
+        <div class="feat"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h11a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2H9l-4 3v-3H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z"/><path d="M19 9h1a2 2 0 0 1 2 2v6a2 2 0 0 1-2 2h-1v3l-4-3"/></svg></span><div>
+          <h3>Cahier</h3>
+          <ul>
+            <li>Le mot de l'équipe d'avant, et le tien pour celle d'après : <b>Info, Problème, Client à surveiller, Produit manquant, Bravo</b>, photo possible.</li>
+            <li>Un message <b>« À lire obligatoirement »</b> ? Lis-le et touche <b>« Lu »</b>.</li>
+          </ul>
+        </div></div>
+        <div class="feat"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.5l8.5 4.5v10L12 21.5 3.5 17V7z"/><path d="M3.5 7L12 11.5 20.5 7M12 11.5v10"/></svg></span><div>
+          <h3>Inventaire</h3>
+          <ul>
+            <li>Compte à la cave ou en chambre froide avec <b>moins / plus</b>, ou touche le chiffre pour taper la valeur.</li>
+            <li>Même sans réseau : ton comptage est gardé et part tout seul au retour du réseau.</li>
+            <li><b>« Voir le récap »</b>, vérifie les oublis, puis envoie.</li>
+          </ul>
+        </div></div>
+        <div class="feat"><span class="ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg></span><div>
+          <h3>Moi</h3>
+          <ul>
+            <li>Ta photo, ton code PIN, tes notifications, ton planning dans ton calendrier.</li>
+            <li>Si ton responsable te le demande : <b>Mes pièces</b> (pièce d'identité, carte vitale, RIB), chiffrées, visibles seulement par toi et le gérant.</li>
+          </ul>
+        </div></div>
+      </div>
+
+      <div class="phone" aria-hidden="true"><div class="screen">
+        <div class="s-top"><span class="s-org"><i></i>Wayowayo</span><span class="s-me"><b>L</b>Léa</span></div>
+        <div class="s-body">
+          <span class="eyebrow" style="font-size:9px">Planning · semaine du 19/10</span>
+          <span class="s-title">Mon planning</span>
+          <div class="s-card dark"><span class="s-small" style="color:inherit;opacity:.7">Prochain service</span><b style="font-size:15px">Sam. 10:00 à 14:30</b><span style="opacity:.8">Mise en place / service</span></div>
+          <div class="s-card"><b>Plages à prendre · 2</b><span class="s-small">Dim. 19:30 à 22:30 · Service</span><span class="s-btn" style="margin-top:4px">Je prends</span></div>
+          <div class="s-card"><b>Proposer ta plage ?</b><span class="s-small">Un mot pour l'équipe, puis « Proposer »</span></div>
+        </div>
+        <div class="s-nav"><span class="on">Planning</span><span>Cahier</span><span>Inventaire</span><span>Moi</span></div>
+      </div></div>
+    </div>
+    <div class="test" style="border-left-color: var(--red)">
+      <p><b>Le pointage et les listes du jour se font au resto</b>, sur la tablette. Depuis ton téléphone, tu ne peux pas pointer : c'est voulu.</p>
+    </div>
+  </section>
+
+  <section id="tablette">
+    <div class="sec-head">
+      <p class="eyebrow">Au resto, sur la tablette</p>
+      <h2>Ta prise de poste en 4 gestes</h2>
+    </div>
+
+    <div class="duo">
+      <ol class="steps" style="counter-reset: step">
+        <li><label style="cursor:default"><span class="tick"><input type="checkbox" id="tb1" disabled hidden><span></span></span><span class="txt">
+          <strong>« Qui es-tu ? »</strong>
+          <span>Touche ton prénom, tape ton code PIN.</span>
+        </span></label></li>
+        <li><label style="cursor:default"><span class="tick"><input type="checkbox" id="tb2" disabled hidden><span></span></span><span class="txt">
+          <strong>Pointe ton arrivée : « Je suis là »</strong>
+          <span>Sur l'écran <b>Maintenant</b>. Le pointage s'ouvre 60 minutes avant ton service. En partant, pointe ta sortie au même endroit.</span>
+        </span></label></li>
+        <li><label style="cursor:default"><span class="tick"><input type="checkbox" id="tb3" disabled hidden><span></span></span><span class="txt">
+          <strong>Ta liste du jour : « Commencer »</strong>
+          <ul>
+            <li>Coche chaque tâche, ajoute une photo ou une valeur quand on te le demande.</li>
+            <li><b>Températures</b> : tape la valeur lue sur le thermomètre. Si elle sort des limites, l'appli te le dit : préviens ton responsable.</li>
+            <li><b>À rattraper</b> : ce qui n'a pas été fait les jours d'avant. Un coup d'œil suffit.</li>
+          </ul>
+        </span></label></li>
+        <li><label style="cursor:default"><span class="tick"><input type="checkbox" id="tb4" disabled hidden><span></span></span><span class="txt">
+          <strong>Rends la main</strong>
+          <span>Onglet <b>Moi</b>, <b>« Changer de personne »</b>. Le suivant tape son PIN, et ce qu'il fait est noté à son nom, pas au tien.</span>
+        </span></label></li>
+      </ol>
+
+      <div class="phone" aria-hidden="true" style="max-width:270px"><div class="screen" style="min-height:400px">
+        <div class="s-top"><span class="s-org"><i></i>Wayowayo</span><span class="s-small">Gambetta</span></div>
+        <div class="s-body">
+          <span class="s-title" style="text-align:center">Qui es-tu ?</span>
+          <div class="who"><span>Léa</span><span style="border-color:var(--red);color:var(--red)">Inès</span><span>Lucas</span></div>
+          <div class="dots"><i class="f"></i><i class="f"></i><i></i><i></i></div>
+          <div class="pad"><b>1</b><b>2</b><b>3</b><b>4</b><b>5</b><b>6</b><b>7</b><b>8</b><b>9</b><b style="visibility:hidden">·</b><b>0</b><b style="font-size:12px">⌫</b></div>
+        </div>
+      </div></div>
+    </div>
+
+    <div class="where">
+      <div><h3>Sur la tablette du resto</h3><ul><li>Pointage</li><li>Listes du jour et températures</li><li>Cahier, inventaire</li><li>Commandes en ligne (si ton resto en prend)</li></ul></div>
+      <div><h3>Sur ton téléphone</h3><ul><li>Planning, échanges, absences</li><li>Cahier, inventaire</li><li>Photo, PIN, notifications</li></ul></div>
+    </div>
+  </section>
+
+  <section id="faq">
+    <div class="sec-head">
+      <p class="eyebrow">Questions fréquentes</p>
+      <h2>Ça coince ?</h2>
+    </div>
+    <div class="faq">
+      <details><summary>Le lien de l'e-mail ne marche plus</summary><div class="ans"><p>Il est valable 7 jours. Ensuite, ouvre l'appli (ou la page de connexion), tape ton e-mail : tu reçois un nouveau lien et un code à 6 chiffres, valables 15 minutes.</p></div></details>
+      <details><summary>L'appli me redemande de me connecter</summary><div class="ans"><p>Tape ton e-mail, puis le code à 6 chiffres reçu par e-mail, directement dans l'appli. Pas besoin de mot de passe.</p></div></details>
+      <details><summary>J'ai oublié mon code PIN</summary><div class="ans"><p>Demande à ton responsable : il le remet à zéro, puis tu en choisis un nouveau dans <b>Moi</b>.</p></div></details>
+      <details><summary>Je ne trouve pas « Sur l'écran d'accueil »</summary><div class="ans"><p>Sur iPhone, ouvre la page dans Safari (pas dans Gmail ni Chrome), touche Partager, fais défiler la liste vers le bas. Sur Android, cherche « Installer l'appli » dans le menu ⋮ de Chrome.</p></div></details>
+      <details><summary>Je ne reçois pas les notifications</summary><div class="ans"><p>Vérifie que tu ouvres bien l'appli depuis son icône (sur iPhone, c'est obligatoire), que les notifications sont activées dans <b>Moi</b>, et dans les réglages du téléphone (Notifications, Wayowayo). Les e-mails continuent de toute façon.</p></div></details>
+      <details><summary>Pourquoi je ne peux pas pointer depuis mon téléphone ?</summary><div class="ans"><p>Le pointage se fait au resto, sur la tablette : c'est la règle pour tout le monde. Ton téléphone sert au planning, au cahier et à l'inventaire.</p></div></details>
+      <details><summary>Qui voit mes infos ?</summary><div class="ans"><p>Ton planning et ta photo sont visibles par l'équipe. Tes pièces (identité, carte vitale, RIB) sont chiffrées et visibles seulement par toi et le gérant.</p></div></details>
+      <details><summary>Je change de téléphone</summary><div class="ans"><p>Installe l'appli sur le nouveau et connecte-toi avec ton e-mail et le code reçu. Tout est là : rien n'est stocké que sur ton ancien téléphone, sauf un inventaire pas encore envoyé.</p></div></details>
+      <details><summary>Le planning de l'appli fait-il foi ?</summary><div class="ans"><p>Ton responsable te dit à partir de quand le planning de l'appli remplace l'ancien. En cas de doute, demande-lui.</p></div></details>
+    </div>
+  </section>
+
+  <section id="bug">
+    <div class="bug">
+      <p class="eyebrow" style="color: var(--citron)">Un souci, une idée ?</p>
+      <h2>Dis-le, ça nous aide</h2>
+      <p class="soft">Les premières semaines, chaque remarque compte, même petite.</p>
+      <ol>
+        <li>Fais une capture d'écran.</li>
+        <li>Note ce que tu essayais de faire, et sur quoi (ton téléphone ou la tablette).</li>
+        <li>Envoie-la à Etienne ou à ton responsable.</li>
+      </ol>
+    </div>
+  </section>
+
+  <footer>Wayowayo · mode d'emploi de l'équipe · octobre 2026</footer>
+</div>
+
+<script>
+(function () {
+  const KEY = "wayowayo-guide-v1";
+  const app = document.getElementById("app");
+  let state = {};
+  try { state = JSON.parse(localStorage.getItem(KEY) || "{}") || {}; } catch (e) { state = {}; }
+  const save = () => { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} };
+
+  // Téléphone : devine Android, sinon iPhone ; le choix de la personne est gardé.
+  const guess = /android/i.test(navigator.userAgent) ? "android" : "ios";
+  const setOs = (os) => {
+    app.dataset.os = os;
+    document.getElementById("os-ios").setAttribute("aria-pressed", String(os === "ios"));
+    document.getElementById("os-android").setAttribute("aria-pressed", String(os === "android"));
+    state.os = os; save();
+  };
+  setOs(state.os || guess);
+  document.getElementById("os-ios").addEventListener("click", () => setOs("ios"));
+  document.getElementById("os-android").addEventListener("click", () => setOs("android"));
+
+  const boxes = Array.from(document.querySelectorAll('#demarrer ol.steps input[type="checkbox"]'));
+  const fill = document.getElementById("fill"), count = document.getElementById("count"), done = document.getElementById("done");
+  state.done = state.done || {};
+  boxes.forEach((b) => { if (state.done[b.id]) b.checked = true; });
+  function update() {
+    const n = boxes.filter((b) => b.checked).length;
+    fill.style.width = (n / boxes.length) * 100 + "%";
+    count.textContent = n + " / " + boxes.length + " faits";
+    done.classList.toggle("show", n === boxes.length);
+    boxes.forEach((b) => { if (b.checked) state.done[b.id] = 1; else delete state.done[b.id]; });
+    save();
+  }
+  boxes.forEach((b) => b.addEventListener("change", update));
+  update();
+})();
+</script>
+</body>
+</html>
